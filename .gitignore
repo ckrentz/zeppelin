@@ -23,15 +23,15 @@ zeppelin-server/local-repo
 zeppelin-server/src/main/resources/zeppelin-site.xml
 
 # conf file
-conf/zeppelin-env.sh
-conf/zeppelin-env.cmd
-conf/zeppelin-site.xml
-conf/shiro.ini
+#conf/zeppelin-env.sh
+#conf/zeppelin-env.cmd
+#conf/zeppelin-site.xml
+#conf/shiro.ini
 conf/keystore
 conf/truststore
 conf/interpreter.json
 conf/notebook-authorization.json
-conf/shiro.ini
+#conf/shiro.ini
 conf/credentials.json
 conf/helium.json
 
