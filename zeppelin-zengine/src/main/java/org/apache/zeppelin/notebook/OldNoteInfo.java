@@ -14,40 +14,55 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.zeppelin.rest.message;
 
-import com.google.gson.Gson;
+package org.apache.zeppelin.notebook;
 
-import org.apache.zeppelin.common.JsonSerializable;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- *  CronRequest rest api request message.
+ *
  */
-public class CronRequest implements JsonSerializable {
-  private static final Gson gson = new Gson();
+public class OldNoteInfo {
+  String id;
+  String name;
+  private Map<String, Object> config = new HashMap<>();
 
-  private String cron;
-  private Boolean releaseResource;
-
-  public CronRequest (){
+  public OldNoteInfo(String id, String name, Map<String, Object> config) {
+    super();
+    this.id = id;
+    this.name = name;
+    this.config = config;
   }
 
-  public String getCronString() {
-    return cron;
+  public OldNoteInfo(Note note) {
+    id = note.getId();
+    name = note.getName();
+    config = note.getConfig();
   }
 
-  public Boolean getReleaseResource() {
-    if (releaseResource == null) {
-      return Boolean.FALSE;
-    }
-    return releaseResource;
+  public String getId() {
+    return id;
   }
 
-  public String toJson() {
-    return gson.toJson(this);
+  public void setId(String id) {
+    this.id = id;
   }
 
-  public static CronRequest fromJson(String json) {
-    return gson.fromJson(json, CronRequest.class);
+  public String getName() {
+    return name;
   }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public Map<String, Object> getConfig() {
+    return config;
+  }
+
+  public void setConfig(Map<String, Object> config) {
+    this.config = config;
+  }
+
 }
