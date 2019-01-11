@@ -388,6 +388,12 @@
           <groupId>org.apache.cassandra</groupId>
           <artifactId>cassandra-thrift</artifactId>
           <version>RELEASE</version>
+          <exclusions>
+          	<exclusion>
+          		<groupId>org.apache.commons</groupId>
+          		<artifactId>commons-lang3</artifactId>
+          	</exclusion>
+          </exclusions>
       </dependency>
 
   </dependencies>
