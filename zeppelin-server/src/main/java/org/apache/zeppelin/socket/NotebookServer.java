@@ -60,8 +60,8 @@ import org.apache.zeppelin.service.SimpleServiceCallback;
 import org.apache.zeppelin.ticket.TicketContainer;
 import org.apache.zeppelin.types.InterpreterSettingsList;
 import org.apache.zeppelin.user.AuthenticationInfo;
+import org.apache.zeppelin.utils.CorsUtils;
 import org.apache.zeppelin.utils.InterpreterBindingUtils;
-import org.apache.zeppelin.utils.SecurityUtils;
 import org.eclipse.jetty.websocket.servlet.WebSocketServlet;
 import org.eclipse.jetty.websocket.servlet.WebSocketServletFactory;
 import org.slf4j.Logger;
@@ -188,7 +188,7 @@ public class NotebookServer extends WebSocketServlet
 
   public boolean checkOrigin(HttpServletRequest request, String origin) {
     try {
-      return SecurityUtils.isValidOrigin(origin, ZeppelinConfiguration.create());
+      return CorsUtils.isValidOrigin(origin, ZeppelinConfiguration.create());
     } catch (UnknownHostException | URISyntaxException e) {
       LOG.error(e.toString(), e);
     }
@@ -238,6 +238,14 @@ public class NotebookServer extends WebSocketServlet
       boolean allowAnonymous = conf.isAnonymousAllowed();
       if (!allowAnonymous && messagereceived.principal.equals("anonymous")) {
         throw new Exception("Anonymous access not allowed ");
+      }
+
+      if (Message.isDisabledForRunningNotes(messagereceived.op)) {
+        Note note = notebook.getNote((String) messagereceived.get("noteId"));
+        if (note != null && note.isRunning()) {
+          throw new Exception("Note is now running sequentially. Can not be performed: " +
+                  messagereceived.op);
+        }
       }
 
       if (StringUtils.isEmpty(conn.getUser())) {
@@ -400,6 +408,11 @@ public class NotebookServer extends WebSocketServlet
       }
     } catch (Exception e) {
       LOG.error("Can't handle message: " + msg, e);
+      try {
+        conn.send(serializeMessage(new Message(OP.ERROR_INFO).put("info", e.getMessage())));
+      } catch (IOException iox) {
+        LOG.error("Fail to send error info", iox);
+      }
     }
   }
 
@@ -780,7 +793,7 @@ public class NotebookServer extends WebSocketServlet
             broadcastNoteList(context.getAutheInfo(), context.getUserAndRoles());
           }
         });
-    
+
   }
 
   private void restoreNote(NotebookSocket conn,
@@ -1642,6 +1655,14 @@ public class NotebookServer extends WebSocketServlet
   @Override
   public void onOutputUpdateAll(Paragraph paragraph, List<InterpreterResultMessage> msgs) {
     // TODO
+  }
+
+  @Override
+  public void noteRunningStatusChange(String noteId, boolean newStatus) {
+    connectionManager.broadcast(
+        noteId,
+        new Message(OP.NOTE_RUNNING_STATUS
+        ).put("status", newStatus));
   }
 
   private void sendAllAngularObjects(Note note, String user, NotebookSocket conn)

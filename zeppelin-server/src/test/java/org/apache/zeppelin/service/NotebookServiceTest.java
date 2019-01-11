@@ -19,6 +19,8 @@
 package org.apache.zeppelin.service;
 
 import com.google.common.collect.Maps;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import org.apache.commons.lang.StringUtils;
 import org.apache.zeppelin.conf.ZeppelinConfiguration;
 import org.apache.zeppelin.interpreter.Interpreter;
@@ -63,6 +65,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -74,6 +77,8 @@ public class NotebookServiceTest {
       new ServiceContext(AuthenticationInfo.ANONYMOUS, new HashSet<>());
 
   private ServiceCallback callback = mock(ServiceCallback.class);
+
+  private Gson gson = new Gson();
 
 
   @Before
@@ -155,9 +160,15 @@ public class NotebookServiceTest {
     assertEquals("/folder_3/new_name", notesInfo.get(0).getPath());
 
     // create another note
-    Note note2 = notebookService.createNote("/folder_4/note2", "test", context, callback);
+    Note note2 = notebookService.createNote("/note2", "test", context, callback);
     assertEquals("note2", note2.getName());
     verify(callback).onSuccess(note2, context);
+
+    // rename note
+    reset(callback);
+    notebookService.renameNote(note2.getId(), "new_note2", true, context, callback);
+    verify(callback).onSuccess(note2, context);
+    assertEquals("new_note2", note2.getName());
 
     // list note
     reset(callback);
@@ -167,7 +178,7 @@ public class NotebookServiceTest {
 
     // delete note
     reset(callback);
-    notebookService.removeNote(note1.getId(), context, callback);
+    notebookService.removeNote(note2.getId(), context, callback);
     verify(callback).onSuccess("Delete note successfully", context);
 
     // list note again
@@ -177,7 +188,7 @@ public class NotebookServiceTest {
     verify(callback).onSuccess(notesInfo, context);
 
     // delete folder
-    notesInfo = notebookService.removeFolder("/folder_4", context, callback);
+    notesInfo = notebookService.removeFolder("/folder_3", context, callback);
     verify(callback).onSuccess(notesInfo, context);
 
     // list note again
@@ -319,6 +330,14 @@ public class NotebookServiceTest {
         new HashMap<>(), new HashMap<>(), false, true, context, callback);
     assertTrue(runStatus);
     verify(callback).onSuccess(p, context);
+
+    // run all paragraphs
+    reset(callback);
+    notebookService.runAllParagraphs(
+            note1.getId(),
+            gson.fromJson(gson.toJson(note1.getParagraphs()), new TypeToken<List>(){}.getType()),
+            context, callback);
+    verify(callback, times(2)).onSuccess(any(), any());
 
     // run paragraph synchronously via invalid code
     //TODO(zjffdu) must sleep for a while, otherwise will get wrong status. This should be due to

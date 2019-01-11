@@ -15,23 +15,45 @@
  * limitations under the License.
  */
 
-package org.apache.zeppelin.notebook;
+package org.apache.zeppelin.realm.kerberos;
 
-import org.apache.zeppelin.interpreter.InterpreterOutput;
-import org.apache.zeppelin.interpreter.InterpreterResultMessage;
-import org.apache.zeppelin.interpreter.InterpreterResultMessageOutput;
-import org.apache.zeppelin.scheduler.JobListener;
-
-import java.util.List;
+import org.apache.shiro.authc.AuthenticationToken;
 
 /**
- * Listen paragraph update
+ * Created for org.apache.zeppelin.server
  */
-public interface ParagraphJobListener extends JobListener<Paragraph> {
-  void onOutputAppend(Paragraph paragraph, int idx, String output);
-  void onOutputUpdate(Paragraph paragraph, int idx, InterpreterResultMessage msg);
-  void onOutputUpdateAll(Paragraph paragraph, List<InterpreterResultMessage> msgs);
+public class KerberosToken implements AuthenticationToken {
+  private Object userId;
+  private String token;
 
-  //TODO(savalek) Temporary solution. Need to refactor cron to be able to notify frontend directly.
-  void noteRunningStatusChange(String noteId, boolean newStatus);
+  public KerberosToken(Object userId, String token) {
+    this.userId = userId;
+    this.token = token;
+  }
+
+  @Override
+  public Object getPrincipal() {
+    return getUserId();
+  }
+
+  @Override
+  public Object getCredentials() {
+    return getToken();
+  }
+
+  public Object getUserId() {
+    return userId;
+  }
+
+  public void setUserId(long userId) {
+    this.userId = userId;
+  }
+
+  public String getToken() {
+    return token;
+  }
+
+  public void setToken(String token) {
+    this.token = token;
+  }
 }

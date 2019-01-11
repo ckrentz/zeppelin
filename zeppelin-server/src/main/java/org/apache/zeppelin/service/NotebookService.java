@@ -262,7 +262,7 @@ public class NotebookService {
     Note note = notebook.getNote(noteId);
     if (note != null) {
       note.setCronSupported(notebook.getConf());
-      if (isRelative) {
+      if (isRelative && !note.getParentPath().equals("/")) {
         newNotePath = note.getParentPath() + "/" + newNotePath;
       } else {
         if (!newNotePath.startsWith("/")) {
@@ -387,21 +387,26 @@ public class NotebookService {
       return;
     }
 
-    for (Map<String, Object> raw : paragraphs) {
-      String paragraphId = (String) raw.get("id");
-      if (paragraphId == null) {
-        continue;
-      }
-      String text = (String) raw.get("paragraph");
-      String title = (String) raw.get("title");
-      Map<String, Object> params = (Map<String, Object>) raw.get("params");
-      Map<String, Object> config = (Map<String, Object>) raw.get("config");
+    note.setRunning(true);
+    try {
+      for (Map<String, Object> raw : paragraphs) {
+        String paragraphId = (String) raw.get("id");
+        if (paragraphId == null) {
+          continue;
+        }
+        String text = (String) raw.get("paragraph");
+        String title = (String) raw.get("title");
+        Map<String, Object> params = (Map<String, Object>) raw.get("params");
+        Map<String, Object> config = (Map<String, Object>) raw.get("config");
 
-      if (runParagraph(noteId, paragraphId, title, text, params, config, false, true,
-          context, callback)) {
-        // stop execution when one paragraph fails.
-        break;
+        if (!runParagraph(noteId, paragraphId, title, text, params, config, false, true,
+                context, callback)) {
+          // stop execution when one paragraph fails.
+          break;
+        }
       }
+    } finally {
+      note.setRunning(false);
     }
   }
 
@@ -1174,7 +1179,7 @@ public class NotebookService {
       String paragraphText = p.getText() == null ? "" : p.getText();
       paragraphText = (String) dmp.patchApply(patches, paragraphText)[0];
       p.setText(paragraphText);
-      callback.onSuccess(paragraphText, context);
+      callback.onSuccess(patchText, context);
     } catch (IOException e) {
       callback.onFailure(new IOException("Fail to patch", e), context);
     }
