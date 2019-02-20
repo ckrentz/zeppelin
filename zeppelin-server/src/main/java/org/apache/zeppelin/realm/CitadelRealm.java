@@ -14,6 +14,14 @@ public class CitadelRealm  extends AuthorizingRealm {
 
         try {
             //Verify authentication
+            String username = token.getUsername();
+            char[] password = token.getPassword();
+
+            //Get Authentication Header from Citadel
+            //Test Code removed for now
+
+            //Compare Auth Header with token
+
         } catch (Exception e) {
             String msg = StringUtils.clean(e.getMessage());
             if (msg == null) {
