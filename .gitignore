@@ -9806,3 +9806,5 @@ zeppelin-web/node/npm
 zeppelin-web/node/npm\.cmd
 
 zeppelin-web/package-lock\.json
+
+package-lock\.json
