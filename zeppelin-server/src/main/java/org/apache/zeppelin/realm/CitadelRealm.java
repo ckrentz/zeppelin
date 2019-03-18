@@ -1,5 +1,6 @@
 package org.apache.zeppelin.realm;
 
+import org.apache.zeppelin.utils.CertUtil;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
@@ -8,12 +9,20 @@ import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.apache.shiro.util.StringUtils;
 
+import java.security.cert.X509Certificate;
+
 public class CitadelRealm  extends AuthorizingRealm {
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authcToken) throws AuthenticationException {
         UsernamePasswordToken token = (UsernamePasswordToken) authcToken;
 
         try {
             //Verify authentication
+
+            String username = (String) token.getPrincipal();
+
+            // Check principal against Citadel certificate
+
+
         } catch (Exception e) {
             String msg = StringUtils.clean(e.getMessage());
             if (msg == null) {
@@ -46,5 +55,11 @@ public class CitadelRealm  extends AuthorizingRealm {
         }
         SimpleAuthorizationInfo authn = new SimpleAuthorizationInfo();
         return authn;
+    }
+
+    private X509Certificate getSSLCertificate() {
+        X509Certificate cert = CertUtil.getCertificate(null, "X-BDP-UserCert");
+
+        return cert;
     }
 }

@@ -215,9 +215,6 @@
                 <spark.version>2.2.1</spark.version>
                 <py4j.version>0.10.4</py4j.version>
             </properties>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
             <modules>
                 <module>scala-2.10</module>
             </modules>
@@ -229,6 +226,9 @@
                 <spark.version>2.1.2</spark.version>
                 <py4j.version>0.10.4</py4j.version>
             </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
             <modules>
                 <module>scala-2.10</module>
             </modules>
