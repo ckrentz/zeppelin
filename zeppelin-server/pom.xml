@@ -373,12 +373,6 @@
         <version>1.1</version>
       </dependency>
 
-    <dependency>
-      <groupId>bdp.web</groupId>
-      <artifactId>spring-webconfig</artifactId>
-      <version>1.7.1</version>
-    </dependency>
-
       <dependency>
         <groupId>bdp.citadel</groupId>
         <artifactId>citadel-spring-security</artifactId>
@@ -387,6 +381,10 @@
           <exclusion>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
+          </exclusion>
+          <exclusion>
+          	<groupId>org.springframework</groupId>
+          	<artifactId>spring-aop</artifactId>
           </exclusion>
         </exclusions>
       </dependency>
