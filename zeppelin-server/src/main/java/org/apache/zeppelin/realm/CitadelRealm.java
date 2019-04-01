@@ -1,5 +1,6 @@
 package org.apache.zeppelin.realm;
 
+import org.apache.zeppelin.rest.CredentialRestApi;
 import org.apache.zeppelin.utils.CertUtil;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
@@ -8,13 +9,20 @@ import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.apache.shiro.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.security.Principal;
 import java.security.cert.X509Certificate;
 
 public class CitadelRealm  extends AuthorizingRealm {
+
+    Logger logger = LoggerFactory.getLogger(CitadelRealm.class);
+
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authcToken) throws AuthenticationException {
         UsernamePasswordToken token = (UsernamePasswordToken) authcToken;
+
+        logger.info("Authenticating with Citadel Realm");
 
         try {
             //Verify authentication
@@ -55,6 +63,7 @@ public class CitadelRealm  extends AuthorizingRealm {
 
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
+        logger.info("Authorizing with Citadel Realm");
         PrincipalCollection principals = new SimplePrincipalCollection();
         try {
 
