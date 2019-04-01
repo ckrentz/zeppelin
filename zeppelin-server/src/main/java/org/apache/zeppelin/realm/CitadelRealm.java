@@ -9,6 +9,7 @@ import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.apache.shiro.util.StringUtils;
 
+import java.security.Principal;
 import java.security.cert.X509Certificate;
 
 public class CitadelRealm  extends AuthorizingRealm {
@@ -20,8 +21,15 @@ public class CitadelRealm  extends AuthorizingRealm {
 
             String username = (String) token.getPrincipal();
 
+            X509Certificate cert = getSSLCertificate();
+
+            Principal certPrincipal = cert.getSubjectDN();
+
             // Check principal against Citadel certificate
 
+            if(username.equals(certPrincipal)) {
+                // User is authorized
+            }
 
         } catch (Exception e) {
             String msg = StringUtils.clean(e.getMessage());
