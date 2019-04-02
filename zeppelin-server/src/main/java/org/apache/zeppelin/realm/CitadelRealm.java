@@ -26,17 +26,28 @@ public class CitadelRealm  extends AuthorizingRealm {
 
         try {
             //Verify authentication
-
-            String username = (String) token.getPrincipal();
+            logger.info("Getting SSL cert");
 
             X509Certificate cert = getSSLCertificate();
 
+            logger.info("Retrieving user DN");
+
             Principal certPrincipal = cert.getSubjectDN();
+
+            logger.info("Cert principal: " + certPrincipal);
 
             // Check principal against Citadel certificate
 
+            logger.info("Getting principal from token");
+
+            String username = (String) token.getPrincipal();
+
+            logger.info("comparing username with principal");
+
             if(username.equals(certPrincipal)) {
                 // User is authorized
+
+                logger.info("Principals match");
             }
 
         } catch (Exception e) {
