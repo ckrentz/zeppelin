@@ -79,6 +79,7 @@ public class LoginRestApi {
     if (isKnoxSSOEnabled()) {
       KnoxJwtRealm knoxJwtRealm = getJTWRealm();
       Cookie cookie = headers.getCookies().get(knoxJwtRealm.getCookieName());
+      LOG.info("Here are the headerS: " + headers.toString());
       if (cookie != null && cookie.getValue() != null) {
         Subject currentUser = org.apache.shiro.SecurityUtils.getSubject();
         JWTAuthenticationToken token = new JWTAuthenticationToken(null, cookie.getValue());
@@ -220,14 +221,14 @@ public class LoginRestApi {
   @ZeppelinApi
   public Response postLogin(@FormParam("userName") String userName,
       @FormParam("password") String password) {
-    LOG.debug("userName:" + userName);
+    LOG.info("userName: " + userName);
     JsonResponse response = null;
     // ticket set to anonymous for anonymous user. Simplify testing.
     Subject currentUser = org.apache.shiro.SecurityUtils.getSubject();
     if (currentUser.isAuthenticated()) {
       currentUser.logout();
     }
-    LOG.debug("currentUser: " + currentUser);
+    LOG.info("currentUser: " + currentUser);
     if (!currentUser.isAuthenticated()) {
 
       UsernamePasswordToken token = new UsernamePasswordToken(userName, password);

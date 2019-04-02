@@ -58,6 +58,14 @@ const requiredModules = [
   'ui.grid.saveState',
 ];
 
+router.get('/', function(req, res, next) {
+  //res.locals.geoip_country_code = req.headers.geoip_country_code;
+  //res.locals.geoip_city = req.headers.geoip_city;
+  //res.render('index', { title: 'bla' });
+  console.log(req.headers);
+  console.log(res.locals);
+});
+
 // headroom should not be used for CI, since we have to execute some integration tests.
 // otherwise, they will fail.
 if (!process.env.BUILD_CI) {

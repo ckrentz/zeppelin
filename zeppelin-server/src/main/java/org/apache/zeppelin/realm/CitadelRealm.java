@@ -32,7 +32,13 @@ public class CitadelRealm  extends AuthorizingRealm {
 
             logger.info("Retrieving user DN");
 
-            Principal certPrincipal = cert.getSubjectDN();
+            Principal certPrincipal = null;
+
+            if(cert != null) {
+                certPrincipal = cert.getSubjectDN();
+            } else {
+                logger.info("Cert was null!");
+            }
 
             logger.info("Cert principal: " + certPrincipal);
 
@@ -58,7 +64,8 @@ public class CitadelRealm  extends AuthorizingRealm {
             if (msg == null) {
                 msg = "Invalid login or password.";
             }
-            throw new AuthenticationException(msg, e);
+            logger.info(e.toString());
+            //throw new AuthenticationException(msg, e);
         }
 
         PrincipalCollection principals = new SimplePrincipalCollection(token.getPrincipal(), this.getName());
