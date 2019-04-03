@@ -93,6 +93,7 @@ public class CitadelRealm  extends AuthorizingRealm {
     }
 
     private X509Certificate getSSLCertificate() {
+        //Replace null with HTTP request
         X509Certificate cert = CertUtil.getCertificate(null, "X-BDP-UserCert");
 
         return cert;

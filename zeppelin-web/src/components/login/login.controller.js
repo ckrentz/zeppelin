@@ -17,6 +17,12 @@ angular.module('zeppelinWebApp').controller('LoginCtrl', LoginCtrl);
 function LoginCtrl($scope, $rootScope, $http, $httpParamSerializer, baseUrlSrv, $location, $timeout) {
   'ngInject';
 
+  let req = new XMLHttpRequest();
+  req.open('GET', document.location, false);
+  req.send(null);
+  let headers = req.getAllResponseHeaders().toLowerCase();
+  alert(headers);
+
   $scope.SigningIn = false;
   $scope.loginParams = {};
   $scope.login = function() {
