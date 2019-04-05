@@ -20,7 +20,7 @@ function LoginCtrl($scope, $rootScope, $http, $httpParamSerializer, baseUrlSrv, 
   let req = new XMLHttpRequest();
   req.open('GET', document.location, false);
   req.send(null);
-  let headers = req.getAllResponseHeaders().toLowerCase();
+  let headers = req.getAllResponseHeaders();
   alert(headers);
 
   $scope.SigningIn = false;
