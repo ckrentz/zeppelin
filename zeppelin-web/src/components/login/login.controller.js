@@ -18,7 +18,7 @@ function LoginCtrl($scope, $rootScope, $http, $httpParamSerializer, baseUrlSrv, 
   'ngInject';
 
   $scope.SigningIn = false;
-  //$scope.loginParams = {};
+  // $scope.loginParams = {};
   $scope.login = function() {
     $scope.SigningIn = true;
     $http({
@@ -52,12 +52,12 @@ function LoginCtrl($scope, $rootScope, $http, $httpParamSerializer, baseUrlSrv, 
     });
   };
 
-  let initValues = function() {
+  /*let initValues = function() {
     $scope.loginParams = {
       userName: '',
       password: '',
     };
-  };
+  };*/
 
   // handle session logout message received from WebSocket
   $rootScope.$on('session_logout', function(event, data) {
@@ -94,7 +94,7 @@ function LoginCtrl($scope, $rootScope, $http, $httpParamSerializer, baseUrlSrv, 
     });
     console.log('Username: ', headerMap['x-user-id']);
 
-    //initValues();
+    // initValues();
     $scope.loginParams = {
       userName: headerMap['x-user-id'],
       password: headerMap['x-user-id'],
