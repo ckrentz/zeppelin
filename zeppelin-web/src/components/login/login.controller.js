@@ -52,12 +52,12 @@ function LoginCtrl($scope, $rootScope, $http, $httpParamSerializer, baseUrlSrv, 
     });
   };
 
-  /*let initValues = function() {
+  /* let initValues = function() {
     $scope.loginParams = {
       userName: '',
       password: '',
     };
-  };*/
+  }; */
 
   // handle session logout message received from WebSocket
   $rootScope.$on('session_logout', function(event, data) {
