@@ -79,7 +79,7 @@ public class LoginRestApi {
     if (isKnoxSSOEnabled()) {
       KnoxJwtRealm knoxJwtRealm = getJTWRealm();
       Cookie cookie = headers.getCookies().get(knoxJwtRealm.getCookieName());
-      LOG.info("Here are the headerS: " + headers.toString());
+      LOG.info("Here are the headers: " + headers.toString());
       if (cookie != null && cookie.getValue() != null) {
         Subject currentUser = org.apache.shiro.SecurityUtils.getSubject();
         JWTAuthenticationToken token = new JWTAuthenticationToken(null, cookie.getValue());

@@ -17,14 +17,8 @@ angular.module('zeppelinWebApp').controller('LoginCtrl', LoginCtrl);
 function LoginCtrl($scope, $rootScope, $http, $httpParamSerializer, baseUrlSrv, $location, $timeout) {
   'ngInject';
 
-  let req = new XMLHttpRequest();
-  req.open('GET', document.location, false);
-  req.send(null);
-  let headers = req.getAllResponseHeaders();
-  alert(headers);
-
   $scope.SigningIn = false;
-  $scope.loginParams = {};
+  //$scope.loginParams = {};
   $scope.login = function() {
     $scope.SigningIn = true;
     $http({
@@ -85,6 +79,25 @@ function LoginCtrl($scope, $rootScope, $http, $httpParamSerializer, baseUrlSrv, 
    ** $scope.$on functions below
    */
   $scope.$on('initLoginValues', function() {
-    initValues();
+    let req = new XMLHttpRequest();
+    req.open('GET', document.location, false);
+    req.send(null);
+    let headers = req.getAllResponseHeaders();
+
+    let arr = headers.trim().split(/[\r\n]+/);
+    let headerMap = {};
+    arr.forEach(function(line) {
+      let parts = line.split(': ');
+      let header = parts.shift();
+      let value = parts.join(': ');
+      headerMap[header] = value;
+    });
+    console.log('Username: ', headerMap['x-user-id']);
+
+    //initValues();
+    $scope.loginParams = {
+      userName: headerMap['x-user-id'],
+      password: headerMap['x-user-id'],
+    };
   });
 }

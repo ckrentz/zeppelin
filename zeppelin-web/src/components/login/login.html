@@ -26,6 +26,7 @@ limitations under the License.
           <div class="form-group" ng-show="loginParams.errorText">
             <div class="alert alert-danger">{{loginParams.errorText}}</div>
           </div>
+          <!--
           <div class="form-group">
             <label for="userName">User Name</label>
             <input placeholder="User Name" type="text" class="form-control" id="userName"
@@ -40,6 +41,7 @@ limitations under the License.
                    ng-keypress="loginParams.errorText = ''"
                    ng-model="loginParams.password" />
           </div>
+          -->
 
           <div class="form-group slide-left import-btn-image-group" ng-show="note.step1">
             <div class="import-btn-image">
@@ -63,7 +65,7 @@ limitations under the License.
               <button type="button" class="btn btn-default btn-primary" disabled><i class="fa fa-circle-o-notch fa-spin"></i> Signing In</button>
             </div>
             <div ng-switch-default>
-              <button type="button" class="btn btn-default btn-primary" ng-click="login()">Upload</button>
+              <button type="button" class="btn btn-default btn-primary" ng-click="login()">Login</button>
             </div>
           </div>
         </div>
