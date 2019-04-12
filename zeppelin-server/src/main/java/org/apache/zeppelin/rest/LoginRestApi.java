@@ -75,6 +75,7 @@ public class LoginRestApi {
   @GET
   @ZeppelinApi
   public Response getLogin(@Context HttpHeaders headers) {
+    LOG.info("Starting getLogin... ");
     JsonResponse response = null;
     if (isKnoxSSOEnabled()) {
       KnoxJwtRealm knoxJwtRealm = getJTWRealm();
@@ -221,6 +222,7 @@ public class LoginRestApi {
   @ZeppelinApi
   public Response postLogin(@FormParam("userName") String userName,
       @FormParam("password") String password) {
+    LOG.info("Starting postLogin... ");
     LOG.info("userName: " + userName);
     JsonResponse response = null;
     // ticket set to anonymous for anonymous user. Simplify testing.

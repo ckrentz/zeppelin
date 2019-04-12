@@ -18,8 +18,33 @@ function LoginCtrl($scope, $rootScope, $http, $httpParamSerializer, baseUrlSrv, 
   'ngInject';
 
   $scope.SigningIn = false;
-  // $scope.loginParams = {};
+  $scope.loginParams = {};
+
+  let initValues = function() {
+    let req = new XMLHttpRequest();
+    req.open('GET', document.location, false);
+    req.send(null);
+    let headers = req.getAllResponseHeaders();
+
+    let arr = headers.trim().split(/[\r\n]+/);
+    let headerMap = {};
+    arr.forEach(function(line) {
+      let parts = line.split(': ');
+      let header = parts.shift();
+      let value = parts.join(': ');
+      headerMap[header] = value;
+    });
+    console.log('Username: ', headerMap['x-user-id']);
+
+    $scope.loginParams = {
+      userName: headerMap['x-user-id'],
+      password: headerMap['x-user-id'],
+    };
+  };
+
+  initValues();
   $scope.login = function() {
+    console.log('Starting login... ');
     $scope.SigningIn = true;
     $http({
       method: 'POST',
@@ -27,10 +52,10 @@ function LoginCtrl($scope, $rootScope, $http, $httpParamSerializer, baseUrlSrv, 
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
-      data: $httpParamSerializer({
+      /* data: $httpParamSerializer({
         'userName': $scope.loginParams.userName,
         'password': $scope.loginParams.password,
-      }),
+      }), */
     }).then(function successCallback(response) {
       $rootScope.ticket = response.data.body;
       angular.element('#loginModal').modal('toggle');
@@ -47,17 +72,12 @@ function LoginCtrl($scope, $rootScope, $http, $httpParamSerializer, baseUrlSrv, 
         }, 100);
       }
     }, function errorCallback(errorResponse) {
-      $scope.loginParams.errorText = 'The username and password that you entered don\'t match.';
+      console.log(errorResponse);
+      $scope.loginParams.errorText = 'The username and password that you entered don\'t match. Username and pass was: '
+        + $scope.loginParams.userName + ', ' + $scope.loginParams.password;
       $scope.SigningIn = false;
     });
   };
-
-  /* let initValues = function() {
-    $scope.loginParams = {
-      userName: '',
-      password: '',
-    };
-  }; */
 
   // handle session logout message received from WebSocket
   $rootScope.$on('session_logout', function(event, data) {
@@ -79,25 +99,6 @@ function LoginCtrl($scope, $rootScope, $http, $httpParamSerializer, baseUrlSrv, 
    ** $scope.$on functions below
    */
   $scope.$on('initLoginValues', function() {
-    let req = new XMLHttpRequest();
-    req.open('GET', document.location, false);
-    req.send(null);
-    let headers = req.getAllResponseHeaders();
-
-    let arr = headers.trim().split(/[\r\n]+/);
-    let headerMap = {};
-    arr.forEach(function(line) {
-      let parts = line.split(': ');
-      let header = parts.shift();
-      let value = parts.join(': ');
-      headerMap[header] = value;
-    });
-    console.log('Username: ', headerMap['x-user-id']);
-
-    // initValues();
-    $scope.loginParams = {
-      userName: headerMap['x-user-id'],
-      password: headerMap['x-user-id'],
-    };
+    initValues();
   });
 }
