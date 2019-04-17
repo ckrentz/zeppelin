@@ -52,10 +52,10 @@ function LoginCtrl($scope, $rootScope, $http, $httpParamSerializer, baseUrlSrv, 
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
-      /* data: $httpParamSerializer({
+      data: $httpParamSerializer({
         'userName': $scope.loginParams.userName,
         'password': $scope.loginParams.password,
-      }), */
+      }),
     }).then(function successCallback(response) {
       $rootScope.ticket = response.data.body;
       angular.element('#loginModal').modal('toggle');
