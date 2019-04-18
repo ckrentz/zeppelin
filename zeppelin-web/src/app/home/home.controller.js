@@ -24,7 +24,7 @@ function HomeCtrl($scope, noteListFactory, websocketMsgSrv, $rootScope, arrayOrd
   vm.websocketMsgSrv = websocketMsgSrv;
   vm.arrayOrderingSrv = arrayOrderingSrv;
   vm.noteActionService = noteActionService;
-  vm.numberOfNotesDisplayed = window.innerHeight / 20;
+  vm.numberOfNotesDisplayed = window.innerHeight / 20
 
   vm.notebookHome = false;
   vm.noteCustomHome = true;
