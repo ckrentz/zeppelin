@@ -19,7 +19,32 @@ function LoginCtrl($scope, $rootScope, $http, $httpParamSerializer, baseUrlSrv, 
 
   $scope.SigningIn = false;
   $scope.loginParams = {};
+
+  let initValues = function() {
+    let req = new XMLHttpRequest();
+    req.open('GET', document.location, false);
+    req.send(null);
+    let headers = req.getAllResponseHeaders();
+
+    let arr = headers.trim().split(/[\r\n]+/);
+    let headerMap = {};
+    arr.forEach(function(line) {
+      let parts = line.split(': ');
+      let header = parts.shift();
+      let value = parts.join(': ');
+      headerMap[header] = value;
+    });
+    console.log('Username: ', headerMap['x-user-id']);
+
+    $scope.loginParams = {
+      userName: headerMap['x-user-id'],
+      password: headerMap['x-user-id'],
+    };
+  };
+
+  initValues();
   $scope.login = function() {
+    console.log('Starting login... ');
     $scope.SigningIn = true;
     $http({
       method: 'POST',
@@ -47,16 +72,11 @@ function LoginCtrl($scope, $rootScope, $http, $httpParamSerializer, baseUrlSrv, 
         }, 100);
       }
     }, function errorCallback(errorResponse) {
-      $scope.loginParams.errorText = 'The username and password that you entered don\'t match.';
+      console.log(errorResponse);
+      $scope.loginParams.errorText = 'The username and password that you entered don\'t match. Username and pass was: '
+        + $scope.loginParams.userName + ', ' + $scope.loginParams.password;
       $scope.SigningIn = false;
     });
-  };
-
-  let initValues = function() {
-    $scope.loginParams = {
-      userName: '',
-      password: '',
-    };
   };
 
   // handle session logout message received from WebSocket
