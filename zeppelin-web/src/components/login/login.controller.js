@@ -73,8 +73,8 @@ function LoginCtrl($scope, $rootScope, $http, $httpParamSerializer, baseUrlSrv, 
       }
     }, function errorCallback(errorResponse) {
       console.log(errorResponse);
-      $scope.loginParams.errorText = 'The username and password that you entered don\'t match. Username and pass was: '
-        + $scope.loginParams.userName + ', ' + $scope.loginParams.password;
+      $scope.loginParams.errorText = 'User has not been granted access to Zeppelin: '
+        + $scope.loginParams.userName;
       $scope.SigningIn = false;
     });
   };
@@ -94,6 +94,11 @@ function LoginCtrl($scope, $rootScope, $http, $httpParamSerializer, baseUrlSrv, 
       $location.path('/').search('ref', locationPath);
     }
   });
+
+  window.onload = function() {
+    alert('Trying login now');
+    $scope.login();
+  };
 
   /*
    ** $scope.$on functions below
