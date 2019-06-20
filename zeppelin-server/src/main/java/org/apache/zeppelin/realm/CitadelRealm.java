@@ -4,7 +4,6 @@ import bdp.citadel.core.model.AttributeType;
 import bdp.citadel.core.model.UserAttribute;
 import bdp.citadel.springsecurity.CitadelUser;
 import org.apache.shiro.authc.*;
-import org.apache.shiro.authc.credential.AllowAllCredentialsMatcher;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
@@ -12,13 +11,16 @@ import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.apache.shiro.util.StringUtils;
 import org.apache.zeppelin.utils.CertUtil;
+import org.apache.zeppelin.utils.CitadelConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 
 import java.security.cert.X509Certificate;
-import java.util.HashSet;
 import java.util.Set;
 
 public class CitadelRealm extends AuthorizingRealm {
@@ -28,14 +30,14 @@ public class CitadelRealm extends AuthorizingRealm {
     @Override
     protected void assertCredentialsMatch(AuthenticationToken token, AuthenticationInfo info) throws AuthenticationException {
 
-        if (!isUserInCitadel(info)) {
+        if (!isUserInCitadel(token, info)) {
             throw new AuthenticationException("User was not registered in Citadel: " + token.getPrincipal());
         }
     }
 
-    private boolean isUserInCitadel(AuthenticationInfo info) {
+    private boolean isUserInCitadel(AuthenticationToken token, AuthenticationInfo info) {
         //Look up the user and confirm they exist in Citadel
-        CitadelUser user = getUser();
+        CitadelUser user = getUser(token);
         logger.info("User from Citadel is: " + user.getUsername());
 
         if(user.getUsername() == info.getPrincipals().getPrimaryPrincipal())
@@ -67,8 +69,13 @@ public class CitadelRealm extends AuthorizingRealm {
         return false;
     }
 
-    private CitadelUser getUser()  throws AuthenticationException {
+    private CitadelUser getUser(AuthenticationToken token)  throws AuthenticationException {
         logger.info("Attempting to get user from Citadel...");
+        CitadelConfig config = new CitadelConfig();
+
+        //PreAuthenticatedAuthenticationToken preAuthToken = new PreAuthenticatedAuthenticationToken(token.getPrincipal(), token.getCredentials());
+        //UserDetails userDetails = config.citadelUserDetailsService().loadUserDetails(preAuthToken);
+
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null) {
             //	No user is logged in.
@@ -76,6 +83,7 @@ public class CitadelRealm extends AuthorizingRealm {
             logger.warn("Authentication problem: Citadel authentication was null");
             return null;
         }
+
         final Object principal = authentication.getPrincipal();
         if (principal instanceof CitadelUser) {
             return (CitadelUser) principal;
