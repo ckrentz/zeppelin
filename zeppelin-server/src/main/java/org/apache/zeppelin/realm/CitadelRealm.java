@@ -10,6 +10,7 @@ import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.apache.shiro.util.StringUtils;
+import org.apache.zeppelin.utils.BDPSecurityContextInInterceptor;
 import org.apache.zeppelin.utils.CertUtil;
 import org.apache.zeppelin.utils.CitadelConfig;
 import org.slf4j.Logger;
@@ -72,6 +73,8 @@ public class CitadelRealm extends AuthorizingRealm {
     private CitadelUser getUser(AuthenticationToken token)  throws AuthenticationException {
         logger.info("Attempting to get user from Citadel...");
         CitadelConfig config = new CitadelConfig();
+
+        BDPSecurityContextInInterceptor interceptor = new BDPSecurityContextInInterceptor();
 
         //PreAuthenticatedAuthenticationToken preAuthToken = new PreAuthenticatedAuthenticationToken(token.getPrincipal(), token.getCredentials());
         //UserDetails userDetails = config.citadelUserDetailsService().loadUserDetails(preAuthToken);
