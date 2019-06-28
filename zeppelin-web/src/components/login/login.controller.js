@@ -47,7 +47,7 @@ function LoginCtrl($scope, $rootScope, $http, $httpParamSerializer, baseUrlSrv, 
     console.log('Starting login... ');
     $scope.SigningIn = true;
     $http({
-      method: 'POST',
+      method: 'GET',
       url: baseUrlSrv.getRestApiBase() + '/login',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',

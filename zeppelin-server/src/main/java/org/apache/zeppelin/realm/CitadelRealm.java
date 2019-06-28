@@ -10,16 +10,12 @@ import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.apache.shiro.util.StringUtils;
-import org.apache.zeppelin.utils.BDPSecurityContextInInterceptor;
 import org.apache.zeppelin.utils.CertUtil;
 import org.apache.zeppelin.utils.CitadelConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
-import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 
 import java.security.cert.X509Certificate;
 import java.util.Set;
@@ -73,8 +69,6 @@ public class CitadelRealm extends AuthorizingRealm {
     private CitadelUser getUser(AuthenticationToken token)  throws AuthenticationException {
         logger.info("Attempting to get user from Citadel...");
         CitadelConfig config = new CitadelConfig();
-
-        BDPSecurityContextInInterceptor interceptor = new BDPSecurityContextInInterceptor();
 
         //PreAuthenticatedAuthenticationToken preAuthToken = new PreAuthenticatedAuthenticationToken(token.getPrincipal(), token.getCredentials());
         //UserDetails userDetails = config.citadelUserDetailsService().loadUserDetails(preAuthToken);

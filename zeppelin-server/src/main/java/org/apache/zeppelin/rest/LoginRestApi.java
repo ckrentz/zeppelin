@@ -49,6 +49,7 @@ import org.apache.zeppelin.realm.jwt.KnoxJwtRealm;
 import org.apache.zeppelin.server.JsonResponse;
 import org.apache.zeppelin.ticket.TicketContainer;
 import org.apache.zeppelin.utils.SecurityUtils;
+import org.mortbay.log.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,7 +75,14 @@ public class LoginRestApi {
   @GET
   @ZeppelinApi
   public Response getLogin(@Context HttpHeaders headers) {
+    Log.info("XXXXXX GET LOGIN XXXXXX");
+    //Log.info("XXXXXX Headers: " + headers.getRequestHeaders().toString());
+    String userName = headers.getHeaderString("X-BDP-UserName");
+    Log.info("XXXXXX Username: " + userName);
+    String userAttributes = headers.getHeaderString("X-BDP-UserAttribute");
+    Log.info("XXXXXX User Atribute: " + userAttributes);
     JsonResponse response = null;
+    /*
     if (isKnoxSSOEnabled()) {
       KnoxJwtRealm knoxJwtRealm = getJTWRealm();
       Cookie cookie = headers.getCookies().get(knoxJwtRealm.getCookieName());
@@ -97,7 +105,29 @@ public class LoginRestApi {
       }
       return response.build();
     }
-    return new JsonResponse(Status.METHOD_NOT_ALLOWED).build();
+    */
+
+    Subject currentUser = org.apache.shiro.SecurityUtils.getSubject();
+
+
+    if (currentUser.isAuthenticated()) {
+      currentUser.logout();
+    }
+    if (!currentUser.isAuthenticated()) {
+
+      UsernamePasswordToken token = new UsernamePasswordToken(userName, password);
+
+      response = proceedToLogin(currentUser, token);
+
+      response.getMessage();
+    }
+
+    if (response == null) {
+      response = new JsonResponse(Response.Status.FORBIDDEN, "", "");
+    }
+
+    LOG.warn(response.toString());
+    return response.build();
   }
 
   private KnoxJwtRealm getJTWRealm() {
@@ -186,9 +216,12 @@ public class LoginRestApi {
   @ZeppelinApi
   public Response postLogin(@FormParam("userName") String userName,
       @FormParam("password") String password) {
+    Log.info("XXXXXX POST LOGIN XXXXXX");
     JsonResponse response = null;
     // ticket set to anonymous for anonymous user. Simplify testing.
     Subject currentUser = org.apache.shiro.SecurityUtils.getSubject();
+
+
     if (currentUser.isAuthenticated()) {
       currentUser.logout();
     }
@@ -197,6 +230,8 @@ public class LoginRestApi {
       UsernamePasswordToken token = new UsernamePasswordToken(userName, password);
 
       response = proceedToLogin(currentUser, token);
+
+      response.getMessage();
     }
 
     if (response == null) {
