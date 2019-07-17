@@ -77,6 +77,15 @@ limitations under the License.
               ng-disabled="revisionView">
         <i class="fa fa-download"></i>
       </button>
+      <input type="file" id="imgupload" style="display:none"/>
+      <button type="button"
+              class="btn btn-default btn-xs"
+              ng-hide="viewOnly"
+              ng-click="uploadFile()"
+              tooltip-placement="bottom" uib-tooltip="Upload File"
+              ng-disabled="revisionView">
+        <i class="fa fa-upload"></i>
+      </button>
 
       <button type="button"
               class="btn btn-primary btn-xs"

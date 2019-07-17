@@ -223,6 +223,11 @@ function NotebookCtrl($scope, $route, $routeParams, $location, $rootScope,
     saveAsService.saveAs(jsonContent, $scope.note.name, 'json');
   };
 
+  $scope.uploadFile = function() {
+    let element = document.querySelector('input[type="file"]');
+    element.click();
+  };
+
   // Clone note
   $scope.cloneNote = function(noteId) {
     BootstrapDialog.confirm({

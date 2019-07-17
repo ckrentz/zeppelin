@@ -109,13 +109,13 @@ public class LoginRestApi {
 
     Subject currentUser = org.apache.shiro.SecurityUtils.getSubject();
 
-
     if (currentUser.isAuthenticated()) {
       currentUser.logout();
     }
     if (!currentUser.isAuthenticated()) {
 
-      UsernamePasswordToken token = new UsernamePasswordToken(userName, password);
+      //Don't need password for Shiro Authentication
+      UsernamePasswordToken token = new UsernamePasswordToken(userName, userName);
 
       response = proceedToLogin(currentUser, token);
 
@@ -170,6 +170,7 @@ public class LoginRestApi {
       currentUser.login(token);
 
       HashSet<String> roles = SecurityUtils.getRoles();
+      Log.info("System roles found were: " + roles.toString());
       String principal = SecurityUtils.getPrincipal();
       String ticket;
       if ("anonymous".equals(principal)) {
