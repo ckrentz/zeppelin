@@ -21,6 +21,7 @@ function MainCtrl($scope, $rootScope, $window, arrayOrderingSrv) {
 
   let init = function() {
     $scope.asIframe = (($window.location.href.indexOf('asIframe') > -1) ? true : false);
+    $rootScope.$emit('login');
   };
 
   init();

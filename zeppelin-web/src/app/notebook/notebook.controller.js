@@ -226,10 +226,7 @@ function NotebookCtrl($scope, $route, $routeParams, $location, $rootScope,
   $scope.uploadFile = function() {
     let element = document.querySelector('input[type="file"]');
     element.click();
-    $('input:file').change(
-      function(e) {
-        console.log(e.target.files[0].name);
-      });
+    alert('Input form value: ' + element.value);
   };
 
   // Clone note

@@ -96,7 +96,7 @@ function LoginCtrl($scope, $rootScope, $http, $httpParamSerializer, baseUrlSrv, 
   });
 
   window.onload = function() {
-    alert('Trying login now');
+    // alert('Trying login now');
     $scope.login();
   };
 
@@ -105,5 +105,13 @@ function LoginCtrl($scope, $rootScope, $http, $httpParamSerializer, baseUrlSrv, 
    */
   $scope.$on('initLoginValues', function() {
     initValues();
+  });
+
+  $scope.$on('login', function() {
+    $scope.login();
+  });
+
+  $rootScope.$on('login', function() {
+    $scope.login();
   });
 }
