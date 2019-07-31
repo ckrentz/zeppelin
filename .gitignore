@@ -9884,3 +9884,9 @@ zeppelin-examples/zeppelin-example-spell-translator/\.factorypath
 zeppelin-interpreter/\.factorypath
 
 zeppelin-zengine/\.factorypath
+
+node_modules/buffer-stream-reader/
+
+node_modules/webhdfs/
+
+package-lock\.json

@@ -226,14 +226,24 @@ function NotebookCtrl($scope, $route, $routeParams, $location, $rootScope,
   $scope.uploadFile = function() {
     const fs = require('fs');
     const element = document.querySelector('input[type="file"]');
-    element.click();
-    // alert('Input form value: ' + element.value);
-    alert('File contents? ' + element);
+    const localFileStream = fs.createReadStream(element);
 
+    element.click();
+
+    console.log('element.name: ' + element.name);
+
+    console.log('element.value: ' + element.value);
+
+    console.log('File contents? ' + localFileStream);
+
+    console.log = function(localFileStream) {
+      process.stdout.write('File write?' + localFileStream + '\n');
+    };
+
+    /*
     const WebHDFS = require('webhdfs');
     const hdfs = WebHDFS.createClient();
 
-    const localFileStream = fs.createReadStream(element);
     const remoteFileStream = hdfs.createWriteStream('/zeppelin/test/newTestFile');
 
     localFileStream.pipe(remoteFileStream);
@@ -245,6 +255,23 @@ function NotebookCtrl($scope, $route, $routeParams, $location, $rootScope,
     remoteFileStream.on('finish', function onFinish() {
       console.log('Wrote file to HDFS: ' + element.value);
     });
+
+    */
+
+    setTimeout(() => {
+      localFileStream.close(); // This may not close the stream.
+      // Artificially marking end-of-stream, as if the underlying resource had
+      // indicated end-of-file by itself, allows the stream to close.
+      // This does not cancel pending read operations, and if there is such an
+      // operation, the process may still not be able to exit successfully
+      // until it finishes.
+      localFileStream.push(null);
+      localFileStream.read(0);
+    }, 100);
+  };
+
+  $scope.copyLink = function(uploadedFile) {
+
   };
 
   // Clone note
