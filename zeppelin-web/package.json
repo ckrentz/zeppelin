@@ -1,5 +1,6 @@
 {
   "name": "zeppelin-web",
+  "proxy": "https://oedevnode00.dev.oedl.tradoc.army.mil/",
   "license": "Apache-2.0",
   "version": "0.0.0",
   "engines": {
@@ -99,6 +100,10 @@
     "time-grunt": "^0.3.1",
     "webpack": "^1.14.0",
     "webpack-dev-server": "^1.16.2"
+  },
+  "browser": {
+    "fs": false,
+    "webhdfs": false
   },
   "repository": {
     "type": "git",

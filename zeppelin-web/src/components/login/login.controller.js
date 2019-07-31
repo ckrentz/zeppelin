@@ -58,7 +58,7 @@ function LoginCtrl($scope, $rootScope, $http, $httpParamSerializer, baseUrlSrv, 
       }),
     }).then(function successCallback(response) {
       $rootScope.ticket = response.data.body;
-      angular.element('#loginModal').modal('toggle');
+      // angular.element('#loginModal').modal('toggle');
       $rootScope.$broadcast('loginSuccess', true);
       $rootScope.userName = $scope.loginParams.userName;
       $scope.SigningIn = false;

@@ -224,9 +224,27 @@ function NotebookCtrl($scope, $route, $routeParams, $location, $rootScope,
   };
 
   $scope.uploadFile = function() {
-    let element = document.querySelector('input[type="file"]');
+    const fs = require('fs');
+    const element = document.querySelector('input[type="file"]');
     element.click();
-    alert('Input form value: ' + element.value);
+    // alert('Input form value: ' + element.value);
+    alert('File contents? ' + element);
+
+    const WebHDFS = require('webhdfs');
+    const hdfs = WebHDFS.createClient();
+
+    const localFileStream = fs.createReadStream(element);
+    const remoteFileStream = hdfs.createWriteStream('/zeppelin/test/newTestFile');
+
+    localFileStream.pipe(remoteFileStream);
+
+    remoteFileStream.on('error', function onError(err) {
+      // Do something with the error
+    });
+
+    remoteFileStream.on('finish', function onFinish() {
+      console.log('Wrote file to HDFS: ' + element.value);
+    });
   };
 
   // Clone note

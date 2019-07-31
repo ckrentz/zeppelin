@@ -91,6 +91,7 @@
     <scala.binary.version>2.11.8</scala.binary.version>
     <scalatest.version>2.2.4</scalatest.version>
     <scalacheck.version>1.12.5</scalacheck.version>
+    <hadoop.version>2.7.3</hadoop.version>
 
     <!-- frontend maven plugin related versions-->
     <node.version>v8.9.3</node.version>
@@ -319,6 +320,19 @@
         <artifactId>powermock-reflect</artifactId>
         <version>${powermock.version}</version>
         <scope>test</scope>
+      </dependency>
+
+      <!-- https://mvnrepository.com/artifact/org.apache.hadoop/hadoop-hdfs -->
+      <dependency>
+        <groupId>org.apache.hadoop</groupId>
+        <artifactId>hadoop-hdfs</artifactId>
+        <version>${hadoop.version}</version>
+      </dependency>
+      <!-- https://mvnrepository.com/artifact/org.apache.hadoop/hadoop-common -->
+      <dependency>
+        <groupId>org.apache.hadoop</groupId>
+        <artifactId>hadoop-common</artifactId>
+        <version>${hadoop.version}</version>
       </dependency>
 
     </dependencies>

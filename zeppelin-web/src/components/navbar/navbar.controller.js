@@ -301,7 +301,7 @@ function NavCtrl($scope, $rootScope, $http, $routeParams, $location,
       }),
     }).then(function successCallback(response) {
       $rootScope.ticket = response.data.body;
-      angular.element('#loginModal').modal('toggle');
+      // angular.element('#loginModal').modal('toggle');
       $rootScope.$broadcast('loginSuccess', true);
       $rootScope.userName = $scope.loginParams.userName;
       $scope.SigningIn = false;
