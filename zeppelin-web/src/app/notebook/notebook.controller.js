@@ -64,6 +64,8 @@ function NotebookCtrl($scope, $route, $routeParams, $location, $rootScope,
     return pattern.test(path);
   };
 
+  $scope.uploadedFiles = ['testFile1.txt', 'testFile2.txt'];
+
   $scope.noteRevisions = [];
   $scope.currentRevision = 'Head';
   $scope.revisionView = isRevisionPath($location.path());
@@ -223,22 +225,12 @@ function NotebookCtrl($scope, $route, $routeParams, $location, $rootScope,
     saveAsService.saveAs(jsonContent, $scope.note.name, 'json');
   };
 
-  $scope.uploadFile = function() {
-    const fs = require('fs');
+  $scope.uploadFileClicked = function() {
+    // const fs = require('fs');
     const element = document.querySelector('input[type="file"]');
-    const localFileStream = fs.createReadStream(element);
+    element.addEventListener('change', $scope.uploadFile);
 
     element.click();
-
-    console.log('element.name: ' + element.name);
-
-    console.log('element.value: ' + element.value);
-
-    console.log('File contents? ' + localFileStream);
-
-    console.log = function(localFileStream) {
-      process.stdout.write('File write?' + localFileStream + '\n');
-    };
 
     /*
     const WebHDFS = require('webhdfs');
@@ -256,8 +248,6 @@ function NotebookCtrl($scope, $route, $routeParams, $location, $rootScope,
       console.log('Wrote file to HDFS: ' + element.value);
     });
 
-    */
-
     setTimeout(() => {
       localFileStream.close(); // This may not close the stream.
       // Artificially marking end-of-stream, as if the underlying resource had
@@ -268,6 +258,18 @@ function NotebookCtrl($scope, $route, $routeParams, $location, $rootScope,
       localFileStream.push(null);
       localFileStream.read(0);
     }, 100);
+
+    */
+  };
+
+  $scope.uploadFile = function(evt) {
+    console.log('evt.target.files[0].name: ' + evt.target.files[0].name);
+
+    $scope.uploadedFiles.push(evt.target.files[0].name);
+
+    console.log('evt.target.files[0].value: ' + evt.target.files[0].value);
+
+    // console.log('File contents? ' + localFileStream);
   };
 
   $scope.copyLink = function(uploadedFile) {
