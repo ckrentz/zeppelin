@@ -213,8 +213,6 @@ public class NotebookServer extends WebSocketServlet
           new AuthenticationInfo(messagereceived.principal, messagereceived.roles,
               messagereceived.ticket);
 
-      LOG.debug("Got message: " + messagereceived.op);
-      LOG.debug("Got data: " + messagereceived.data);
       /** Lets be elegant here */
       switch (messagereceived.op) {
         case LIST_NOTES:
