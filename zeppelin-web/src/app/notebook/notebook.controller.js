@@ -263,11 +263,19 @@ function NotebookCtrl($scope, $route, $routeParams, $location, $rootScope,
   };
 
   $scope.uploadFile = function(evt) {
-    console.log('evt.target.files[0].name: ' + evt.target.files[0].name);
+    // const files = evt.target.files; // FileList object
 
-    $scope.uploadedFiles.push(evt.target.files[0].name);
+    const reader = new FileReader();
 
-    console.log('evt.target.files[0].value: ' + evt.target.files[0].value);
+    reader.addEventListener('load', function(e) {
+      websocketMsgSrv.uploadFile(e.target.result);
+      // alert(e.target.result);
+    });
+
+    const fileName = evt.target.files[0].name;
+    $scope.uploadedFiles.push(fileName);
+
+    reader.readAsBinaryString(evt.target.files[0]);
 
     // console.log('File contents? ' + localFileStream);
   };

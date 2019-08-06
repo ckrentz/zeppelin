@@ -16,9 +16,14 @@
  */
 package org.apache.zeppelin.socket;
 
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.UnknownHostException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -208,6 +213,8 @@ public class NotebookServer extends WebSocketServlet
           new AuthenticationInfo(messagereceived.principal, messagereceived.roles,
               messagereceived.ticket);
 
+      LOG.debug("Got message: " + messagereceived.op);
+      LOG.debug("Got data: " + messagereceived.data);
       /** Lets be elegant here */
       switch (messagereceived.op) {
         case LIST_NOTES:
@@ -355,6 +362,9 @@ public class NotebookServer extends WebSocketServlet
           break;
         case SAVE_NOTE_FORMS:
           saveNoteForms(conn, userAndRoles, notebook, messagereceived);
+          break;
+        case UPLOAD_FILE:
+          uploadFile(conn, messagereceived);
           break;
         case REMOVE_NOTE_FORMS:
           removeNoteForms(conn, userAndRoles, notebook, messagereceived);
@@ -2628,6 +2638,12 @@ public class NotebookServer extends WebSocketServlet
       note.persist(subject);
       broadcastNoteForms(note);
     }
+  }
+
+  private void uploadFile(NotebookSocket conn, Message messagereceived) throws IOException {
+    LOG.debug("Got to uploadFile() in backend with file named: " + messagereceived.data.toString());
+
+    Files.write(Paths.get("/data01/tmp/testFile" + UUID.randomUUID() + ".txt"), messagereceived.data.toString().getBytes());
   }
 
   private void removeNoteForms(NotebookSocket conn, HashSet<String> userAndRoles, Notebook notebook,

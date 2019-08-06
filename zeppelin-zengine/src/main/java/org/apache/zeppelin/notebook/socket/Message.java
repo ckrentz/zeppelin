@@ -185,6 +185,7 @@ public class Message implements JsonSerializable {
     RUN_PARAGRAPH_USING_SPELL,    // [s-c] run paragraph using spell
     PARAS_INFO,                   // [s-c] paragraph runtime infos
     SAVE_NOTE_FORMS,              // save note forms
+    UPLOAD_FILE,                  // upload file to HDFS
     REMOVE_NOTE_FORMS,            // remove note forms
     NOTICE                        // [s-c] Notice
   }

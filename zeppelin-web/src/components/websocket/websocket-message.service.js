@@ -360,6 +360,14 @@ function WebsocketMessageService($rootScope, websocketEvents) {
       });
     },
 
+    uploadFile: function(file) {
+      websocketEvents.sendNewEvent({op: 'UPLOAD_FILE',
+        data: {
+          fileData: file,
+        },
+      });
+    },
+
     removeNoteForms: function(note, formName) {
       websocketEvents.sendNewEvent({op: 'REMOVE_NOTE_FORMS',
         data: {

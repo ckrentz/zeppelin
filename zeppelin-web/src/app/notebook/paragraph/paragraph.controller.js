@@ -426,6 +426,10 @@ function ParagraphCtrl($scope, $rootScope, $route, $window, $routeParams, $locat
     });
   };
 
+  $scope.uploadFile = function(file) {
+    websocketMsgSrv.uploadFile(file);
+  };
+
   $scope.toggleEnableDisable = function(paragraph) {
     paragraph.config.enabled = !paragraph.config.enabled;
     commitParagraph(paragraph);

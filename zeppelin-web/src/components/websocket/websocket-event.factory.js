@@ -144,6 +144,8 @@ function WebsocketEventFactory($rootScope, $websocket, $location, baseUrlSrv, ng
       $rootScope.$broadcast('interpreterBindings', data);
     } else if (op === 'SAVE_NOTE_FORMS') {
       $rootScope.$broadcast('saveNoteForms', data);
+    } else if (op === 'UPLOAD_FILE') {
+      $rootScope.$broadcast('uploadFile', data);
     } else if (op === 'ERROR_INFO') {
       BootstrapDialog.show({
         closable: false,
