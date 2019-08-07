@@ -64,7 +64,7 @@ function NotebookCtrl($scope, $route, $routeParams, $location, $rootScope,
     return pattern.test(path);
   };
 
-  $scope.uploadedFiles = ['testFile1.txt', 'testFile2.txt'];
+  $scope.uploadedFiles = [];
 
   $scope.noteRevisions = [];
   $scope.currentRevision = 'Head';
@@ -231,35 +231,6 @@ function NotebookCtrl($scope, $route, $routeParams, $location, $rootScope,
     element.addEventListener('change', $scope.uploadFile);
 
     element.click();
-
-    /*
-    const WebHDFS = require('webhdfs');
-    const hdfs = WebHDFS.createClient();
-
-    const remoteFileStream = hdfs.createWriteStream('/zeppelin/test/newTestFile');
-
-    localFileStream.pipe(remoteFileStream);
-
-    remoteFileStream.on('error', function onError(err) {
-      // Do something with the error
-    });
-
-    remoteFileStream.on('finish', function onFinish() {
-      console.log('Wrote file to HDFS: ' + element.value);
-    });
-
-    setTimeout(() => {
-      localFileStream.close(); // This may not close the stream.
-      // Artificially marking end-of-stream, as if the underlying resource had
-      // indicated end-of-file by itself, allows the stream to close.
-      // This does not cancel pending read operations, and if there is such an
-      // operation, the process may still not be able to exit successfully
-      // until it finishes.
-      localFileStream.push(null);
-      localFileStream.read(0);
-    }, 100);
-
-    */
   };
 
   $scope.uploadFile = function(evt) {
@@ -267,13 +238,24 @@ function NotebookCtrl($scope, $route, $routeParams, $location, $rootScope,
 
     const reader = new FileReader();
 
+    const fileName = evt.target.files[0].name;
+
+    reader.onloadend = (function(evt) {
+      return function(evt) {
+        websocketMsgSrv.uploadFile(fileName, evt.target.result, $rootScope.ticket.principal);
+      };
+    })(evt.target.files[0]);
+
+    reader.onloadend.bind(null, fileName);
+
+    $scope.uploadedFiles.push('hdfs:///user/root/zeppelin/' + fileName);
+
+    /*
     reader.addEventListener('load', function(e) {
       websocketMsgSrv.uploadFile(e.target.result);
       // alert(e.target.result);
     });
-
-    const fileName = evt.target.files[0].name;
-    $scope.uploadedFiles.push(fileName);
+    */
 
     reader.readAsBinaryString(evt.target.files[0]);
 

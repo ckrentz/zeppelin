@@ -114,6 +114,8 @@ limitations under the License.
           <span class="caret"></span>
         </button>
         <ul class="dropdown-menu pull-right" aria-labelledby="uploadedFilesDropdown">
+          <li>Uploaded Files:</li>
+          <mat-divider></mat-divider>
           <li ng-repeat="uploadedFile in uploadedFiles" class="uploadedFile">
             <a style="cursor:pointer" ng-click="copyLink(uploadedFile)">
               <span style="display: block;">

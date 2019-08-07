@@ -360,10 +360,12 @@ function WebsocketMessageService($rootScope, websocketEvents) {
       });
     },
 
-    uploadFile: function(file) {
+    uploadFile: function(fileName, file, userName) {
       websocketEvents.sendNewEvent({op: 'UPLOAD_FILE',
         data: {
+          fileName: fileName,
           fileData: file,
+          userName: userName,
         },
       });
     },

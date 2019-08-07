@@ -65,6 +65,7 @@ import org.apache.zeppelin.ticket.TicketContainer;
 import org.apache.zeppelin.types.InterpreterSettingsList;
 import org.apache.zeppelin.user.AuthenticationInfo;
 import org.apache.zeppelin.util.WatcherSecurityKey;
+import org.apache.zeppelin.utils.HDFSFileIO;
 import org.apache.zeppelin.utils.InterpreterBindingUtils;
 import org.apache.zeppelin.utils.SecurityUtils;
 import org.eclipse.jetty.websocket.api.WebSocketException;
@@ -2641,7 +2642,9 @@ public class NotebookServer extends WebSocketServlet
   private void uploadFile(NotebookSocket conn, Message messagereceived) throws IOException {
     LOG.debug("Got to uploadFile() in backend with file named: " + messagereceived.data.toString());
 
-    Files.write(Paths.get("/data01/tmp/testFile" + UUID.randomUUID() + ".txt"), messagereceived.data.toString().getBytes());
+    //Files.write(Paths.get("/data01/tmp/testFile" + UUID.randomUUID() + ".txt"), messagereceived.data.toString().getBytes());
+
+    HDFSFileIO.writeToHDFS(messagereceived);
   }
 
   private void removeNoteForms(NotebookSocket conn, HashSet<String> userAndRoles, Notebook notebook,
