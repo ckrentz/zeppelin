@@ -248,7 +248,7 @@ function NotebookCtrl($scope, $route, $routeParams, $location, $rootScope,
 
     reader.onloadend.bind(null, fileName);
 
-    $scope.uploadedFiles.push('hdfs:///user/root/zeppelin/' + fileName);
+    $scope.uploadedFiles.push('hdfs:///user/root/zeppelin/' + $rootScope.ticket.principal + '/' + fileName);
 
     /*
     reader.addEventListener('load', function(e) {
@@ -262,8 +262,36 @@ function NotebookCtrl($scope, $route, $routeParams, $location, $rootScope,
     // console.log('File contents? ' + localFileStream);
   };
 
-  $scope.copyLink = function(uploadedFile) {
+  $scope.deleteFile = function(uploadedFile, inx) {
+    $scope.uploadedFiles.splice(inx, 1);
 
+    websocketMsgSrv.deleteFile(uploadedFile, $rootScope.ticket.principal);
+  };
+
+  $scope.copyLink = function(uploadedFile) {
+    const txtArea = document.createElement('textarea');
+    txtArea.id = 'txt';
+    txtArea.style.position = 'fixed';
+    txtArea.style.top = '0';
+    txtArea.style.left = '0';
+    txtArea.style.opacity = '0';
+    txtArea.value = uploadedFile;
+    document.body.appendChild(txtArea);
+    txtArea.select();
+
+    try {
+      const successful = document.execCommand('copy');
+      const msg = successful ? 'successful' : 'unsuccessful';
+      console.log('Copying text command was ' + msg);
+      if (successful) {
+        return true;
+      }
+    } catch (err) {
+      console.log('Oops, unable to copy');
+    } finally {
+      document.body.removeChild(txtArea);
+    }
+    return false;
   };
 
   // Clone note

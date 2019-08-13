@@ -370,6 +370,23 @@ function WebsocketMessageService($rootScope, websocketEvents) {
       });
     },
 
+    deleteFile: function(fileName, userName) {
+      websocketEvents.sendNewEvent({op: 'DELETE_FILE',
+        data: {
+          fileName: fileName,
+          userName: userName,
+        },
+      });
+    },
+
+    getUploadedFiles: function(userName) {
+      websocketEvents.sendNewEvent({op: 'GET_FILES',
+        data: {
+          userName: userName,
+        },
+      });
+    },
+
     removeNoteForms: function(note, formName) {
       websocketEvents.sendNewEvent({op: 'REMOVE_NOTE_FORMS',
         data: {

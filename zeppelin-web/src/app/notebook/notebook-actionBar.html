@@ -114,14 +114,19 @@ limitations under the License.
           <span class="caret"></span>
         </button>
         <ul class="dropdown-menu pull-right" aria-labelledby="uploadedFilesDropdown">
-          <li>Uploaded Files:</li>
+          <li> Uploaded Files <i>(click to copy path)</i>:</li>
           <mat-divider></mat-divider>
           <li ng-repeat="uploadedFile in uploadedFiles" class="uploadedFile">
-            <a style="cursor:pointer" ng-click="copyLink(uploadedFile)">
-              <span style="display: block;">
-                <strong>{{uploadedFile}}</strong>
-              </span>
-            </a>
+            <span style="display: block;">
+              <a style="cursor:pointer" ng-click="copyLink(uploadedFile)">
+                <strong> {{uploadedFile}} </strong>
+              </a>
+              <a style="cursor:pointer" ng-click="deleteFile(uploadedFile, $index)">
+                <button type="submit" onclick="return confirm('Are you sure to delete this file?');" style="border: 0; background: none;">
+                  <i class="fa fa-trash-o fa-fw"></i>
+                </button>
+              </a>
+            </span>
           </li>
         </ul>
       </div>

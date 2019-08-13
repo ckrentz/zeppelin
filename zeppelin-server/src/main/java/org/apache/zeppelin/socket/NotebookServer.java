@@ -365,6 +365,9 @@ public class NotebookServer extends WebSocketServlet
         case UPLOAD_FILE:
           uploadFile(conn, messagereceived);
           break;
+        case DELETE_FILE:
+          deleteFile(conn, messagereceived);
+          break;
         case REMOVE_NOTE_FORMS:
           removeNoteForms(conn, userAndRoles, notebook, messagereceived);
           break;
@@ -2640,11 +2643,11 @@ public class NotebookServer extends WebSocketServlet
   }
 
   private void uploadFile(NotebookSocket conn, Message messagereceived) throws IOException {
-    LOG.debug("Got to uploadFile() in backend with file named: " + messagereceived.data.toString());
-
-    //Files.write(Paths.get("/data01/tmp/testFile" + UUID.randomUUID() + ".txt"), messagereceived.data.toString().getBytes());
-
     HDFSFileIO.writeToHDFS(messagereceived);
+  }
+
+  private void deleteFile(NotebookSocket conn, Message messagereceived) throws IOException {
+    HDFSFileIO.deleteFromHDFS(messagereceived);
   }
 
   private void removeNoteForms(NotebookSocket conn, HashSet<String> userAndRoles, Notebook notebook,

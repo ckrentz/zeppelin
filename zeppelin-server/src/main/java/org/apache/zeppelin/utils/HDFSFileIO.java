@@ -10,8 +10,13 @@ import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.zeppelin.notebook.socket.Message;
+import org.apache.zeppelin.socket.NotebookServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class HDFSFileIO {
+
+    private static final Logger LOG = LoggerFactory.getLogger(NotebookServer.class);
 
     public static void writeToHDFS(Message message) throws IOException {
         Configuration conf = new Configuration();
@@ -25,14 +30,14 @@ public class HDFSFileIO {
         // Hadoop DFS Path - & Output file
         if(fileName != null && !fileName.isEmpty())
         {
-            outFile = new Path("/user/root/zeppelin/" + fileName);
+            outFile = new Path("/user/root/zeppelin/" + userName + "/" + fileName);
         } else {
-            outFile = new Path("/user/root/zeppelin/testFile" + UUID.randomUUID() + ".txt");
+            outFile = new Path("/user/root/zeppelin/" + userName + "/testFile" + UUID.randomUUID() + ".txt");
         }
 
         // Verification
         if (fs.exists(outFile)) {
-            System.out.println("Output file already exists");
+            LOG.error("Output file already exists");
             throw new IOException("Output file already exists");
         }
 
@@ -47,10 +52,35 @@ public class HDFSFileIO {
                 out.write(buffer, 0, bytesRead);
             }
         } catch (IOException e) {
-            System.out.println("Error while copying file");
+            LOG.error("Error while copying file");
         } finally {
             in.close();
             out.close();
+        }
+    }
+
+    public static void deleteFromHDFS(Message message) throws IOException {
+        Configuration conf = new Configuration();
+        conf.set("hadoop.job.ugi", "hdfs");
+
+        // fileName should include path
+        String fileName = (String) message.get("fileName");
+        String userName = message.principal;
+
+        FileSystem fs = FileSystem.get(conf);
+
+        Path filePath = new Path(fileName);
+
+        // Verification
+        if (!fs.exists(filePath)) {
+            LOG.error("Tried to delete a file that doesn't exist: " + fileName);
+            throw new IOException("Tried to delete a file that doesn't exist: " + fileName);
+        }
+
+        try {
+            fs.delete(filePath, false);
+        } catch (IOException e) {
+            System.out.println("Error while deleting file");
         }
     }
 }

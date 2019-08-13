@@ -186,6 +186,7 @@ public class Message implements JsonSerializable {
     PARAS_INFO,                   // [s-c] paragraph runtime infos
     SAVE_NOTE_FORMS,              // save note forms
     UPLOAD_FILE,                  // upload file to HDFS
+    DELETE_FILE,                  // delete file from HDFS
     REMOVE_NOTE_FORMS,            // remove note forms
     NOTICE                        // [s-c] Notice
   }
