@@ -117,7 +117,7 @@ public class LoginRestApi {
       //Don't need password for Shiro Authentication
       UsernamePasswordToken token = new UsernamePasswordToken(userName, userName);
 
-      response = proceedToLogin(currentUser, token);
+      response = proceedToLogin(currentUser, token, isAdmin(userAttributes), isUser(userAttributes));
 
       response.getMessage();
     }
@@ -128,6 +128,24 @@ public class LoginRestApi {
 
     LOG.warn(response.toString());
     return response.build();
+  }
+
+  private boolean isAdmin(String userAttributes) {
+    if(userAttributes.contains("DL_Admin"))
+    {
+      return true;
+    }
+
+    return false;
+  }
+
+  private boolean isUser(String userAttributes) {
+    if(userAttributes.contains("DL_Citizen_Data_Scientist"))
+    {
+      return true;
+    }
+
+    return false;
   }
 
   private KnoxJwtRealm getJTWRealm() {
@@ -162,15 +180,15 @@ public class LoginRestApi {
     return false;
   }
 
-  private JsonResponse proceedToLogin(Subject currentUser, AuthenticationToken token) {
+  private JsonResponse proceedToLogin(Subject currentUser, AuthenticationToken token, boolean isAdmin, boolean isUser) {
     JsonResponse response = null;
     try {
       logoutCurrentUser();
       currentUser.getSession(true);
       currentUser.login(token);
 
-      HashSet<String> roles = SecurityUtils.getRoles();
-      Log.info("System roles found were: " + roles.toString());
+      //HashSet<String> roles = SecurityUtils.getRoles();
+      //Log.info("System roles found were: " + roles.toString());
       String principal = SecurityUtils.getPrincipal();
       String ticket;
       if ("anonymous".equals(principal)) {
@@ -181,7 +199,16 @@ public class LoginRestApi {
 
       Map<String, String> data = new HashMap<>();
       data.put("principal", principal);
-      data.put("roles", gson.toJson(roles));
+      //data.put("roles", gson.toJson(roles));
+      // Check if user has BDP Admin or Citizen Data Scientist role
+      HashSet<String> roles = new HashSet<>();
+      if(isAdmin) {
+        roles.add("DL_Admin");
+        data.put("roles", gson.toJson(roles));
+      } else if(isUser) {
+        roles.add("DL_Citizen_Data_Scientist");
+        data.put("roles", gson.toJson(roles));
+      }
       data.put("ticket", ticket);
 
       response = new JsonResponse(Response.Status.OK, "", data);
@@ -230,7 +257,7 @@ public class LoginRestApi {
 
       UsernamePasswordToken token = new UsernamePasswordToken(userName, password);
 
-      response = proceedToLogin(currentUser, token);
+      response = proceedToLogin(currentUser, token, false, false);
 
       response.getMessage();
     }

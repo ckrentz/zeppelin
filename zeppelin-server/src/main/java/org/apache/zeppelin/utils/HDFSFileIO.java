@@ -3,12 +3,12 @@ package org.apache.zeppelin.utils;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashSet;
 import java.util.UUID;
 
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FSDataOutputStream;
-import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.fs.*;
+import org.apache.zeppelin.conf.ZeppelinConfiguration;
 import org.apache.zeppelin.notebook.socket.Message;
 import org.apache.zeppelin.socket.NotebookServer;
 import org.slf4j.Logger;
@@ -17,6 +17,8 @@ import org.slf4j.LoggerFactory;
 public class HDFSFileIO {
 
     private static final Logger LOG = LoggerFactory.getLogger(NotebookServer.class);
+
+    private static ZeppelinConfiguration zConf =  ZeppelinConfiguration.create();
 
     public static void writeToHDFS(Message message) throws IOException {
         Configuration conf = new Configuration();
@@ -30,9 +32,9 @@ public class HDFSFileIO {
         // Hadoop DFS Path - & Output file
         if(fileName != null && !fileName.isEmpty())
         {
-            outFile = new Path("/user/root/zeppelin/" + userName + "/" + fileName);
+            outFile = new Path(zConf.getHDFSPath() + userName + "/" + fileName);
         } else {
-            outFile = new Path("/user/root/zeppelin/" + userName + "/testFile" + UUID.randomUUID() + ".txt");
+            outFile = new Path(zConf.getHDFSPath() + userName + "/testFile" + UUID.randomUUID() + ".txt");
         }
 
         // Verification
@@ -82,5 +84,26 @@ public class HDFSFileIO {
         } catch (IOException e) {
             System.out.println("Error while deleting file");
         }
+    }
+
+    public static HashSet<String> getUploadedFilesForUser() throws IOException {
+        Configuration conf = new Configuration();
+        conf.set("hadoop.job.ugi", "hdfs");
+        final String userName = SecurityUtils.getPrincipal();
+
+        FileSystem fs = FileSystem.get(conf);
+
+        Path hdfsPath = new Path(zConf.getHDFSPath() + userName + "/");
+
+        RemoteIterator<LocatedFileStatus> fileStatusListIterator = fs.listFiles( hdfsPath, false);
+
+        HashSet<String> fileList = new HashSet<>();
+
+        while(fileStatusListIterator.hasNext()){
+            LocatedFileStatus fileStatus = fileStatusListIterator.next();
+            fileList.add(fileStatus.getPath().toString());
+        }
+
+        return fileList;
     }
 }

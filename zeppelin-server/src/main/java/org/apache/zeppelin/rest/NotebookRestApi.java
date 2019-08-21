@@ -47,6 +47,7 @@ import org.apache.zeppelin.server.JsonResponse;
 import org.apache.zeppelin.socket.NotebookServer;
 import org.apache.zeppelin.types.InterpreterSettingsList;
 import org.apache.zeppelin.user.AuthenticationInfo;
+import org.apache.zeppelin.utils.HDFSFileIO;
 import org.apache.zeppelin.utils.InterpreterBindingUtils;
 import org.apache.zeppelin.utils.SecurityUtils;
 import org.quartz.CronExpression;
@@ -315,6 +316,17 @@ public class NotebookRestApi {
     List<Map<String, String>> notesInfo = notebookServer.generateNotesInfo(false, subject,
         userAndRoles);
     return new JsonResponse<>(Status.OK, "", notesInfo).build();
+  }
+
+  @GET
+  @Path("uploadedFiles")
+  @ZeppelinApi
+  public Response getUploadedFiles() throws IOException {
+    AuthenticationInfo subject = new AuthenticationInfo(SecurityUtils.getPrincipal());
+    HashSet<String> userAndRoles = SecurityUtils.getRoles();
+    userAndRoles.add(subject.getUser());
+    HashSet<String> files = HDFSFileIO.getUploadedFilesForUser();
+    return new JsonResponse<>(Status.OK, "", files).build();
   }
 
   @GET

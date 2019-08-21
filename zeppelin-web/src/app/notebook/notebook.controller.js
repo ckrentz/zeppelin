@@ -248,8 +248,9 @@ function NotebookCtrl($scope, $route, $routeParams, $location, $rootScope,
 
     reader.onloadend.bind(null, fileName);
 
-    $scope.uploadedFiles.push('hdfs:///user/root/zeppelin/' + $rootScope.ticket.principal + '/' + fileName);
+    reader.readAsBinaryString(evt.target.files[0]);
 
+    // $scope.uploadedFiles.push('hdfs:///user/oe_admin/zeppelin/' + $rootScope.ticket.principal + '/' + fileName);
     /*
     reader.addEventListener('load', function(e) {
       websocketMsgSrv.uploadFile(e.target.result);
@@ -257,9 +258,34 @@ function NotebookCtrl($scope, $route, $routeParams, $location, $rootScope,
     });
     */
 
-    reader.readAsBinaryString(evt.target.files[0]);
+    $scope.refreshUploadedFileList();
 
     // console.log('File contents? ' + localFileStream);
+  };
+
+  $scope.loadUploadedFileList = function() {
+    $http.get(baseUrlSrv.getRestApiBase() + '/notebook/uploadedFiles').success(
+      function(data, status, headers, config) {
+        $scope.uploadedFiles = data.body.files;
+        console.log('Uploaded files: ' + $scope.uploadedFiles);
+      }).error(
+      function(data, status, headers, config) {
+        console.log('Error %o %o', status, data.message);
+      });
+  };
+
+  $scope.loadUploadedFileList();
+
+  $scope.refreshUploadedFileList = function() {
+    $scope.uploadedFiles = [];
+    $http.get(baseUrlSrv.getRestApiBase() + '/notebook/uploadedFiles').success(
+      function(data, status, headers, config) {
+        $scope.uploadedFiles = data.body.files;
+        console.log('Uploaded files: ' + $scope.uploadedFiles);
+      }).error(
+      function(data, status, headers, config) {
+        console.log('Error %o %o', status, data.message);
+      });
   };
 
   $scope.deleteFile = function(uploadedFile, inx) {

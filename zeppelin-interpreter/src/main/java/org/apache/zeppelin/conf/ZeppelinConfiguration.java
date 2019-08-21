@@ -428,6 +428,8 @@ public class ZeppelinConfiguration extends XMLConfiguration {
     return getConfigFSDir() + "/interpreter.json";
   }
 
+  public String getHDFSPath() { return getString(ConfVars.ZEPPELIN_NOTEBOOK_HDFS_DIR); }
+
   public String getHeliumConfPath() {
     return getRelativeDir(String.format("%s/helium.json", getConfDir()));
   }
@@ -712,6 +714,7 @@ public class ZeppelinConfiguration extends XMLConfiguration {
     ZEPPELIN_INTERPRETER_OUTPUT_LIMIT("zeppelin.interpreter.output.limit", 1024 * 100),
     ZEPPELIN_INTERPRETER_SCHEDULER_POOL_SIZE("zeppelin.scheduler.threadpool.size", 100),
     ZEPPELIN_ENCODING("zeppelin.encoding", "UTF-8"),
+    ZEPPELIN_NOTEBOOK_HDFS_DIR("zeppelin.notebook.hdfs.dir", "/user/oe_admin/zeppelin/"),
     ZEPPELIN_NOTEBOOK_DIR("zeppelin.notebook.dir", "notebook"),
     ZEPPELIN_RECOVERY_DIR("zeppelin.recovery.dir", "recovery"),
     ZEPPELIN_RECOVERY_STORAGE_CLASS("zeppelin.recovery.storage.class",
